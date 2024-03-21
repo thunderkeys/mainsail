@@ -223,6 +223,10 @@
                     <v-icon class="mr-1">{{ mdiPrinter }}</v-icon>
                     {{ $t('History.Reprint') }}
                 </v-list-item>
+                <v-list-item v-if="!contextMenu.item.isDirectory && contextMenu.item.exists" @click="downloadFile">
+                    <v-icon class="mr-1">{{ mdiCloudDownload }}</v-icon>
+                    {{ $t('History.Download') }}
+                </v-list-item>
                 <v-list-item
                     v-if="contextMenu.item.exists && isJobQueueAvailable"
                     @click="addToQueue(contextMenu.item)">
@@ -537,6 +541,7 @@ import {
     mdiNotebookPlus,
     mdiNotebook,
     mdiFileCancel,
+    mdiCloudDownload,
 } from '@mdi/js'
 import AddBatchToQueueDialog from '@/components/dialogs/AddBatchToQueueDialog.vue'
 
@@ -560,6 +565,7 @@ export default class HistoryListPanel extends Mixins(BaseMixin) {
     mdiNotebookEdit = mdiNotebookEdit
     mdiNotebook = mdiNotebook
     mdiFileCancel = mdiFileCancel
+    mdiCloudDownload = mdiCloudDownload
 
     formatFilesize = formatFilesize
 
@@ -1156,6 +1162,13 @@ export default class HistoryListPanel extends Mixins(BaseMixin) {
         })
 
         this.noteDialog.boolShow = false
+    }
+
+    downloadFile() {
+        const filename = this.contextMenu.item.filename
+        const href = this.apiUrl + '/server/files/gcodes/' + encodeURI(filename)
+
+        window.open(href)
     }
 }
 </script>
